@@ -1,0 +1,93 @@
+##################### 
+Various python utilities
+Written by Douglas Applegate
+
+Free and available for all to use 
+######################
+
+
+bashreader.py
+
+This program reads a bash script file and parses it for environment
+variables. All variables are returned as part of a dictionary
+object. Any export, source, or system calls are executed as if the
+original script was sourced.
+
+Example use:
+
+import bashreader
+
+config = bashreader.parseFile('INSTRUMENT.ini')
+config.nchips  #return number of chips
+
+
+Typing 'bashreader.py' on the command line runs a test suite. It
+should return 23 successful tests.
+
+
+##############
+
+ldac.py
+
+This is a wrapper around ldac FITS catalog tables. An LDACCat object
+represents one HDU from an LDAC file. It acts like a dictionary. Each column is converted into a key in the dictionary, and the data is stored as a numpy array.
+
+Example uses:
+
+cat = ldac.openObjectFile('sex.cat', table='LDAC_OBJECTS')
+cat = ldac.openObjectFile('ldac.cat') #defaults to 'OBJECTS'
+
+len(cat)  #prints catalog elements
+cat.keys() #print column names
+cat['Xpos']  #returns numpy array of Xpos column
+cat.filter(cat['MAG_AUTO'] < 25)   #returns a new, filtered ldac catalog object
+cat.saveas('bright.cat')         #saves just this hdu to a file
+
+Numpy functions work:
+cat.filter(logical_and(cat['MAG_AUTO'] > 15, cat['rh'] > 2))
+
+Items may be accessed individually, but do not recognize column names:
+cat[15] #returns a numpy array of the 15th catalog entry
+cat[15][3]  #returns the 4th column for the 15th catalog entry
+
+plot(tracks['MAG'][:15], tracks['Color'][:15])  #easiest way to access specific elements by the column name.
+
+
+#################
+
+plotting.py
+
+#prereqs: matplotlib (pylab)
+
+This file contains functions to display histograms. This is a wrapper around a few different numpy and pylab functions.
+
+plotting.histogram(data, range=(low,high), bins=nbins)
+    Other options include specifying a filename, xlabel, ylabel, title, log, and normed. bins may be a min and max value, or a list of bin edges.
+
+plotting.stackedHistogram(data_list, bins, range, labels)
+    stackedHistogram has the same options as histogram. data_list is a list of lists containing the data you wish to histogram. Histograms will be stacked according to their order in data_list. Labels will display a legend with the appropriate histograms' names.
+
+histogram2d(x,y,bins,range,normed)
+	histogram2d makes a 2d histogram of your data. Format for bins and range are the same as numpy.histogram2d.
+
+##################
+
+leastsq.py
+
+#prereqs: scipy
+
+leastsq.py is a wrapper around fitting methods in scipy. See the inline pythondoc for details on how to use the functions. In general, all functions take X values, the Y values, and any errors, and return the fitted params, and optionally chisq and the covariance matrix.
+
+leastsq.leastsq uses the 'lm' algorithm to fit general, nonlinear functions.
+leastsq.lin_leastsq fits a general linear model.
+leastsq.linear_leastsq uses SVD to fit a line to datapoints.
+
+###################
+
+run_analyseldac.py
+
+#prereqs: ldac.py, bashreader.py, pyfits
+
+This script takes an input catalog, splits it into NPROC catalogs, and runs analyseldac on each catalog. It then pieces together the individual output catalogs. There should be no difference between running this and running analyseldac directly on the catalog.
+
+./run_analyseldac.py input.cat output.cat image.fits

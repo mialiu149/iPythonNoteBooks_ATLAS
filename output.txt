@@ -1,0 +1,21 @@
+## prepare the list of files to read in. additional tags can be specified.
+postfix = {'data':'PeriodB','wenugvbs':'sherpa','wenug':'sherpa','wenu':'sherpa','zee':'alpgen','dp':'','ttbar':'mcnlo'}
+process =['data','wenugvbs','wenug','wenu','zee','dp','ttbar','tg']
+samples = []
+## append postfix to the process to create a list of sample names
+for f in process:
+    if f is 'tg': filename = 'wenugvbs'+'_'+postfix['wenugvbs']
+    elif f in ['dp','data']: filename = f
+    #elif f in ['dp']: filename = f
+    else : filename = f+'_'+postfix[f]
+    samples.append(filename)
+print 'Going to use these samples:'
+print samples
+# define the control regions here :
+nominalCR={'nonTightPh':'ph_nontight_def1','nonIsoPhCut':6,'nonIsoElCut':0.1,'highMET':35,'highMt':40,'lowMET':20,'lowMt':20}
+## output dictionaries to save the data
+sample_VeryTight = dict((el,0) for el in samples)
+sample_VeryTight = LoadData(csv_base='/Users/Mia/Documents/Work/WgZgPhysics/Analysis/WgTemplates/0807_2014_VeryTight/',
+                     measurement='inclusive',sample=samples,loadedsample=sample_VeryTight,process=process,
+                     bveto=True,njets=0,Mjj=0,dYjj=2.4)
+VeryTight_comp,VeryTight_output,VeryTight_normalization=CalComp(samples=sample_VeryTight,CR=nominalCR)

@@ -1,0 +1,124 @@
+## variables should be the same for all files (unless there are changes in the branches)
+postfix = {'data':'PeriodB','wenugvbs':'sherpa','wenug':'sherpa','wenu':'sherpa','zee':'alpgen','dp':'','ttbar':'mcnlo'}
+process =['data','wenugvbs','wenug','wenu','zee','dp','ttbar','tg']
+sample_TightPlusPlus = dict((el,0) for el in process) 
+sample_VeryTight = dict((el,0) for el in process) 
+sample_Tight = dict((el,0) for el in process) 
+sample_Medium = dict((el,0) for el in process) 
+ 
+samples = []
+#append postfix to the process to create a list of sample names
+for f in process:
+    if f is 'tg': filename = 'wenugvbs'+'_'+postfix['wenugvbs']
+    elif f in ['dp','data']: filename = f
+    #elif f in ['dp']: filename = f
+    else : filename = f+'_'+postfix[f]
+    samples.append(filename)
+print 'Going to use these samples:'
+print samples    
+ 
+sample_TightPlusPlus = dict((el,0) for el in samples)
+sample_VeryTight = dict((el,0) for el in samples)
+sample_Tight = dict((el,0) for el in samples)
+sample_Medium = dict((el,0) for el in samples)
+ 
+#sample_TightPlusPlus = LoadData(csv_base='/Users/Mia/Documents/WgZgPhysics/Analysis/WgTemplates/0603_2014_TightPlusPlus/',
+#                     bkgtype='non',sample=samples,loadedsample=sample_TightPlusPlus,process=process,njets=2,Mjj=0,dYjj=2.4)
+sample_VeryTight = LoadData(csv_base='/Users/Mia/Documents/Work/WgZgPhysics/Analysis/WgTemplates/0807_2014_VeryTight/',
+                     bkgtype='non',sample=samples,loadedsample=sample_VeryTight,process=process,njets=2,Mjj=0,dYjj=2.4)
+#sample_Tight = LoadData(csv_base='/Users/Mia/Documents/WgZgPhysics/Analysis/WgTemplates/0603_2014_Tight/',
+#                     bkgtype='non',sample=samples,loadedsample=sample_Tight,process=process,njets=2,Mjj=0,dYjj=2.4)
+#sample_Medium = LoadData(csv_base='/Users/Mia/Documents/WgZgPhysics/Analysis/WgTemplates/0603_2014_Medium/',
+#                     bkgtype='non',sample=samples,loadedsample=sample_Medium,process=process,njets=2,Mjj=0,dYjj=2.4)
+ 
+#TightPlusPlus_comp,TightPlusPlus_output=CalComp(samples=sample_TightPlusPlus)
+VeryTight_comp,VeryTight_output,VeryTight_normalization=CalComp(samples=sample_VeryTight)
+#Tight_comp,Tight_output=CalComp(samples=sample_Tight)
+#Medium_comp,Medium_output=CalComp(samples=sample_Medium)
+ 
+#print TightPlusPlus_comp,VeryTight_output,VeryTight_normalization
+Going to use these samples:
+['data', 'wenugvbs_sherpa', 'wenug_sherpa', 'wenu_sherpa', 'zee_alpgen', 'dp', 'ttbar_mcnlo', 'wenugvbs_sherpa']
+###################################################################################################
+Loading csv files from /Users/Mia/Documents/Work/WgZgPhysics/Analysis/WgTemplates/0807_2014_VeryTight/
+Cuts applied: njets>=  2 ,Mjj >=  0 GeV ,dYjj>=  2.4 dYj0_lg 999 pt_balance 0
+                                                                                                          
+####################################  jet->el Closure test  ##############################################
+                                                                                                          
+dp MC: 
+NA                                                 :  3181.35+/-913.66
+NB'                                                :  816.55+/-364.91
+NC'                                                :  1148.99+/-560.81
+ND'                                                :  0.20+/-0.20
+R'                                                 :  0.0007+/-0.0009
+Signal leakge :
+C_Bprime=(NBprime_wg)/(NA_wg) :  0.0125+/-0.0011
+C_Cprime=(NCprime_wg)/(NA_wg) :  0.0713+/-0.0027
+C_Dprime=(NDprime_wg)/(NA_wg) :  0.0009+/-0.0003
+                                                                                                          
+##################################  γ+jets DD estimation  ################################################
+                                                                                                          
+Eprime = NDprime_data-NDprime_ewk+(NA_data-NA_ewk)*C_Dprime
+         -R_dp*(NBprime_data-NBprime_ewk)*C_Cprime
+         -(NCprime_data-NCprime_ewk)*C_Bprime*R_dp
+Fprime = (4/Eprime^2)*(C_Bprime*C_Cprime*R_dp-C_Dprime)*
+         ((NA_data-NA_ewk)*(NDprime_data-NDprime_ewk)-  
+         (NCprime_data-NCprime_ewk)*(NBprime_data-NBprime_ewk)*R_dp)
+Gprime = 2*(C_Bprime*C_Cprime*R_dp-C_Dprime) 
+                                                                                                          
+Eprime                                                      :  304.9071+/-20.2526
+Fprime                                                      :  -0.0017+/-0.0288
+Gprime                                                      :  -0.0000+/-0.0006
+Eprime*(-1+sqrt(1+Fprime))/Gprime                           :  7455.0954+/-192.4550
+NA_dp_DD : NA_data-NA_ewk-Eprime*(-1+sqrt(1+Fprime))/Gprime :  946.5944+/-127.5069
+                                                                                                          
+##########################################################################################################
+###################################  Begin analysis ######################################################
+##########################################################################################################
+                                                                                                          
+################################      jet->γ Closure test      ############################################
+                                                                                                          
+wenu MC :
+NA                               :  502.34+/-61.98
+NB                               :  395.66+/-49.32
+NC                               :  439.46+/-54.36
+ND                               :  593.52+/-70.16
+R: NA*ND/(NB*NC)                 :  1.7147+/-0.4201
+Signal leakge :   
+C_B=(NB_wg)/(NA_wg)  : 0.1220+/-0.0036
+C_C=(NC_wg)/(NA_wg)  : 0.0650+/-0.0026
+C_D=(ND_wg)/(NA_wg)  : 0.0126+/-0.0011
+                                                                                                          
+##############################   wjets DD estimation     ################################################
+                                                                                                          
+K = NA_data-NA_ewk                                                                                    : 8904.0267+/-114.1602
+E = ND_data - ND_ewk+(NA_data-NA_ewk)*C_D-(NB_data-NB_ewk)*C_C*Rmc-(NC_data-NC_ewk)*C_B*Rmc           : 2496.4203+/-60.3881
+F = 4*(C_B*C_C*Rmc-C_D)*((NA_data-NA_ewk)*(ND_data-ND_ewk)-(NC_data-NC_ewk)*(NB_data-NB_ewk)*Rmc)/E^2 : -0.0550+/-0.0131
+G = 2*(C_B*C_C*Rmc-C_D)                                                                               : -0.0094+/-0.0023
+E*(-1+sqrt(1+F))/G                                                                                    : 7439.5839+/-155.6189
+NA_wjets = K-E*(-1+sqrt(1+F))/G                                                                       : 1464.4428+/-86.6654
+###################################################################################################
+##################################    Summary  ####################################################
+###################################################################################################
+                                                                                                          
+Signal and background components: 
+Sample & NA & NB & NC & ND & NB' &NC' & ND'
+data  &  10294.00+/-101.46 & 3838.0000+/-61.9516 & 2392.0000+/-48.9081 & 3051.0000+/-55.2359 & 464.0000+/-21.5407 & 2154.0000+/-46.4112 & 359.0000+/-18.9473
+wenugvbs  &  162.13+/-2.60 & 16.2408+/-0.8191 & 8.8497+/-0.6059 & 0.8458+/-0.1872 & 1.7414+/-0.2737 & 7.5691+/-0.5641 & 0.0906+/-0.0645
+wenug  &  4571.40+/-44.70 & 557.8139+/-15.5626 & 296.9785+/-11.4214 & 57.6167+/-4.9847 & 57.1844+/-5.0158 & 326.1300+/-11.9873 & 4.1590+/-1.2899
+wenu  &  502.34+/-61.98 & 395.6631+/-49.3172 & 439.4633+/-54.3647 & 593.5215+/-70.1624 & 9.9738+/-7.0541 & 13.5078+/-8.6314 & 0.0000+/-0
+zee  &  779.10+/-51.36 & 272.3605+/-31.6396 & 147.9088+/-22.2254 & 91.4849+/-16.8159 & 6.9816+/-4.9393 & 653.4158+/-48.8004 & 12.0546+/-6.1598
+dp  &  3181.35+/-913.66 & 1328.8124+/-614.4160 & 265.4092+/-248.5734 & 287.1502+/-243.7814 & 816.5450+/-364.9109 & 1148.9909+/-560.8089 & 0.2045+/-0.2045
+ttbar  &  610.87+/-10.03 & 170.5578+/-5.3048 & 130.5377+/-4.6578 & 96.8579+/-4.0280 & 12.7204+/-1.5491 & 11.8066+/-1.5014 & 0.2423+/-0.1786
+tg  &  189.67+/-2.82 & 10.3415+/-0.6568 & 11.1728+/-0.6808 & 1.1331+/-0.2177 & 1.9471+/-0.2828 & 9.4551+/-0.6240 & 0.1237+/-0.0724
+data  & $ \left(1.029 \pm 0.010\right) \times 10^{4} $&$ \left(3.84 \pm 0.06\right) \times 10^{3} $&$ \left(2.39 \pm 0.05\right) \times 10^{3} $&$ \left(3.05 \pm 0.06\right) \times 10^{3} $&$ 464 \pm 22 $&$ \left(2.15 \pm 0.05\right) \times 10^{3} $&$ 359 \pm 19 $ \\
+wenugvbs  & $ 162.1 \pm 2.6 $&$ 16.2 \pm 0.8 $&$ 8.8 \pm 0.6 $&$ 0.85 \pm 0.19 $&$ 1.74 \pm 0.27 $&$ 7.6 \pm 0.6 $&$ 0.09 \pm 0.06 $ \\
+wenug  & $ \left(4.57 \pm 0.04\right) \times 10^{3} $&$ 558 \pm 16 $&$ 297 \pm 11 $&$ 58 \pm 5 $&$ 57 \pm 5 $&$ 326 \pm 12 $&$ 4.2 \pm 1.3 $ \\
+wenu  & $ \left(5.0 \pm 0.6\right) \times 10^{2} $&$ \left(4.0 \pm 0.5\right) \times 10^{2} $&$ \left(4.4 \pm 0.5\right) \times 10^{2} $&$ \left(5.9 \pm 0.7\right) \times 10^{2} $&$ 10 \pm 7 $&$ 14 \pm 9 $&$ 0.0 \pm 0 $ \\
+zee  & $ \left(7.8 \pm 0.5\right) \times 10^{2} $&$ 272 \pm 32 $&$ 148 \pm 22 $&$ 91 \pm 17 $&$ 7 \pm 5 $&$ \left(6.5 \pm 0.5\right) \times 10^{2} $&$ 12 \pm 6 $ \\
+dp  & $ \left(3.2 \pm 0.9\right) \times 10^{3} $&$ \left(1.3 \pm 0.6\right) \times 10^{3} $&$ \left(2.7 \pm 2.5\right) \times 10^{2} $&$ \left(2.9 \pm 2.4\right) \times 10^{2} $&$ \left(8 \pm 4\right) \times 10^{2} $&$ \left(1.1 \pm 0.6\right) \times 10^{3} $&$ 0.20 \pm 0.20 $ \\
+ttbar  & $ 611 \pm 10 $&$ 171 \pm 5 $&$ 131 \pm 5 $&$ 97 \pm 4 $&$ 12.7 \pm 1.5 $&$ 11.8 \pm 1.5 $&$ 0.24 \pm 0.18 $ \\
+tg  & $ 189.7 \pm 2.8 $&$ 10.3 \pm 0.7 $&$ 11.2 \pm 0.7 $&$ 1.13 \pm 0.22 $&$ 1.95 \pm 0.28 $&$ 9.5 \pm 0.6 $&$ 0.12 \pm 0.07 $ \\
+wenu DD & 1464.4428+/-86.6654 , wenu MC :  502.3369+/-61.9764
+dp DD & 946.5944+/-127.5069 , dp MC :  3181.3451+/-913.6600
+Signal yield from Data :  (6.30+/-0.21)e+03
